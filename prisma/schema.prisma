@@ -14,16 +14,41 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  role      Role     @default(USER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  token     String?  @db.VarChar(1000)
+  id          Int          @id @default(autoincrement())
+  nama        String       @db.VarChar(255)
+  email       String       @unique
+  password    String
+  role        Role         @default(USER)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  token       String?      @db.VarChar(1000)
+  JobPostings JobPosting[] // Menambahkan relasi ke model JobPosting
 }
 
 enum Role {
   ADMIN
   USER
+}
+
+model JobPosting {
+  id          Int      @id @default(autoincrement())
+  
+  judul String @db.VarChar(255)
+  deskripsi String @db.Text
+  pendidikan String @db.VarChar(255)
+  jeniskelamin String @db.VarChar(255)
+  statuskerja String @db.VarChar(255)
+  besarangaji String @db.VarChar(255)
+  lokasikerja String @db.VarChar(255)
+  provinsi String @db.VarChar(255)
+  kabupaten String @db.VarChar(255)
+  kecamatan String @db.VarChar(255)
+  desa String @db.VarChar(255)
+  syaratpekerjaan String @db.Text
+  kontaklowongan String @db.VarChar(255)
+  
+  userId      Int
+  User        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
