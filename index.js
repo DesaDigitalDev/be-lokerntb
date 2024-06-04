@@ -1,16 +1,30 @@
 
 const express = require('express');
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
+const authRouter = require('./app/AuthUser/router');
 
 const corsOptions = {
     origin: 'http://localhost:3000',
     credentials: true,
 };
+// const { PrismaClient } = require('@prisma/client');
+// const prisma = new PrismaClient();
+
+// async function main() {
+//   try {
+//     await prisma.$connect();
+//     console.log('Koneksi ke database MySQL melalui Prisma berhasil!');
+//   } catch (error) {
+//     console.error('Gagal terhubung ke database:', error.message);
+//   }
+// }
+
+// main();
 
 app.use(express.json());
 app.use(cookieParser());
@@ -19,8 +33,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors(corsOptions));
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use('/',authRouter)
+
 app.get('/', (req, res) => {
-  res.send('Selamat datang di API kami!');
+  res.send('Selamat datang di API om');
 });
 
 app.listen(port, () => {
