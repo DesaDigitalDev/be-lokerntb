@@ -460,7 +460,7 @@ class LowonganPekerjaanController {
             // filter berdasarkan gaji tertinggi
             if (gaji === "true") {
                 const highestItem = await prisma.$queryRaw`
-            SELECT * FROM lowonganpekerjaan
+            SELECT * FROM Lowonganpekerjaan
             ORDER BY CAST(REPLACE(REPLACE(gaji, ',', ''), ' ', '') AS UNSIGNED) DESC
             LIMIT 10;`;
                 if (highestItem) {
