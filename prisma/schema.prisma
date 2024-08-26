@@ -22,7 +22,9 @@ model User {
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   token       String?      @db.VarChar(1000)
-  JobPostings JobPosting[] // Menambahkan relasi ke model JobPosting
+  companyprofile Companyprofile[]
+  profesipekerjaan Profesipekerjaan[]
+  lowonganpekerjaan Lowonganpekerjaan[]
 }
 
 enum Role {
@@ -30,25 +32,86 @@ enum Role {
   USER
 }
 
-model JobPosting {
-  id          Int      @id @default(autoincrement())
-  
-  judul String @db.VarChar(255)
-  deskripsi String @db.Text
-  pendidikan String @db.VarChar(255)
-  jeniskelamin String @db.VarChar(255)
-  statuskerja String @db.VarChar(255)
-  besarangaji String @db.VarChar(255)
-  lokasikerja String @db.VarChar(255)
-  provinsi String @db.VarChar(255)
-  kabupaten String @db.VarChar(255)
-  kecamatan String @db.VarChar(255)
-  desa String @db.VarChar(255)
-  syaratpekerjaan String @db.Text
-  kontaklowongan String @db.VarChar(255)
-  
+// PROFIL PERUSHAAN
+model Companyprofile {
+  id                Int      @id @default(autoincrement())
+  namaperusahaan    String   @db.VarChar(255)
+  bidangusaha       String   @db.VarChar(255)
+  alamatperusahaan  String   @db.VarChar(255)
+  alamatkabupaten   String   @db.VarChar(255)
+  alamatkecamatan   String   @db.VarChar(255)
+  emailperusahaan   String   @db.VarChar(255)
+  teleponperusahaan String   @db.VarChar(255)
+  jumlahkaryawan    Int
+  website           String?  @db.VarChar(255)
+  profilperusahaan  String   @db.VarChar(255)
+  isactive          Boolean  @default(false)
   userId      Int
-  User        User     @relation(fields: [userId], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id])
+  lowonganpekerjaan Lowonganpekerjaan[]
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }
+
+// PROFESI PEKERJAAN
+model Profesipekerjaan {
+  id Int @id @default(autoincrement())
+  nama String @db.VarChar(255)
+  createdAt DateTime @default(now())
+  userId Int
+  user User @relation(fields: [userId], references: [id])
+  updatedAt DateTime @updatedAt
+  @@index(fields:[nama])
+}
+
+
+
+model Lowonganpekerjaan {
+  id Int @id @default(autoincrement())
+  perusahaanId Int
+  userId Int
+  gaji  String @db.VarChar(255)
+  umur  String @db.VarChar(255)
+  kabupaten  String @db.VarChar(255)
+  kecamatan  String @db.VarChar(255)
+  lokasi   String   @db.VarChar(255)
+  email String? @db.VarChar(255)
+  nomorhp String? @db.VarChar(255)
+  alamatkirimlamaran String? @db.VarChar(255)
+  lamaronline Boolean @default(false)
+  lamaroffline Boolean @default(false)
+  profesipekerjaan String @db.Text
+  jeniskelamin String @db.Text
+  statuskerja String @db.Text
+  pendidikan String @db.Text
+  deskripsi String @db.Text
+  perusahaan Companyprofile @relation(fields: [perusahaanId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// model JobPosting {
+
+//   id          Int      @id @default(autoincrement())
+  
+//   judul String @db.VarChar(255)
+//   deskripsi String @db.Text
+//   pendidikan String @db.VarChar(255)
+//   usia String @db.VarChar(255)
+//   jeniskelamin String @db.VarChar(255)
+//   statuskerja String @db.VarChar(255)
+//   besarangaji String @db.VarChar(255)
+//   lokasikerja String @db.VarChar(255)
+//   provinsi String @db.VarChar(255)
+//   kabupaten String @db.VarChar(255)
+//   kecamatan String @db.VarChar(255)
+//   desa String @db.VarChar(255)
+//   syaratpekerjaan String @db.Text
+//   kontaklowongan String @db.VarChar(255)
+  
+//   userId      Int
+//   User        User     @relation(fields: [userId], references: [id])
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime @updatedAt
+// }

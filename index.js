@@ -7,6 +7,10 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
 const authRouter = require('./app/AuthUser/router');
+const registerCompanyRouter = require('./app/RegisterCompany/router');
+const profesipekerjaanRouter = require('./app/ProfesiPekerjaan/router');
+const lowonganpekerjaanRouter = require('./app/LowonganPekerjaan/router');
+const adminRouter = require('./app/Admin/router');
 
 const corsOptions = {
     origin: 'http://localhost:3000',
@@ -34,10 +38,16 @@ app.use(cors(corsOptions));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/',authRouter)
+app.use('/company',registerCompanyRouter)
+app.use('/profesi-pekerjaan',profesipekerjaanRouter)
+app.use('/lowongan-pekerjaan',lowonganpekerjaanRouter)
 
-app.get('/', (req, res) => {
-  res.send('Selamat datang di API om');
-});
+// admin
+app.use('/admin',adminRouter)
+
+// app.get('/', (req, res) => {
+//   res.send('Selamat datang di API om');
+// });
 
 app.listen(port, () => {
   console.log(`Server berjalan di http://localhost:${port}`);
