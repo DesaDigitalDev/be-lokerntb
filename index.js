@@ -12,10 +12,19 @@ const profesipekerjaanRouter = require('./app/ProfesiPekerjaan/router');
 const lowonganpekerjaanRouter = require('./app/LowonganPekerjaan/router');
 const adminRouter = require('./app/Admin/router');
 
-const corsOptions = {
-    origin: 'http://localhost:3000',
-    credentials: true,
-};
+
+// Daftar origin yang diizinkan
+const allowedOrigins = [
+  'https://lokerntb.id',
+  'https://www.lokerntb.id',
+  'http://localhost:3000'
+];
+
+
+// const corsOptions = {
+//     origin: 'http://localhost:3000',
+//     credentials: true,
+// };
 // const { PrismaClient } = require('@prisma/client');
 // const prisma = new PrismaClient();
 
@@ -34,7 +43,24 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
+
+
+// cors
+// Middleware CORS
+app.use(cors({
+  origin: (origin, callback) => {
+    if (allowedOrigins.includes(origin) || !origin) {
+      // Izinkan permintaan dari origin yang ada dalam daftar atau tidak ada origin (misalnya, dari server-side)
+      callback(null, true);
+    } else {
+      // Tolak permintaan dari origin yang tidak ada dalam daftar
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+}));
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/',authRouter)

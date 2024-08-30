@@ -32,7 +32,6 @@ class ProfesiPekerjaanController {
             datareturn.profesipekerjaan = profesipekerjaan.sort((a, b) => a.nama.localeCompare(b.nama));
             return res.json(datareturn);
         } catch (error) {
-            console.log(error)
             return res.status(500).json(datareturn)
         }
     }

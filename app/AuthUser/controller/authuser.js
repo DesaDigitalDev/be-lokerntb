@@ -113,8 +113,10 @@ class AuthUserController {
       });
       res.cookie("lokerntb", token, {
         httpOnly: true,
-        secure: false,
+        secure: true,
         expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 hari
+        domain: 'lokerntb.id',
+        path: '/',
       });
       return res.status(200).json({ message: "Login berhasil!", user, token });
     } catch (error) {

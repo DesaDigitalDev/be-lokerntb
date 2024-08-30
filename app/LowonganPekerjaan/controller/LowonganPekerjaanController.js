@@ -2,6 +2,8 @@ const ProfesiPekerjaanController = require("../../ProfesiPekerjaan/controller/Pr
 const ValidationService = require("../../Services/AllValidation/AllValidationService")
 const removeSpacesServices = require("../../Services/RemoveSpace/RemoveSpaceService")
 const { PrismaClient } = require('@prisma/client')
+const SendMailService = require("../../Services/SendMail/SendMailService")
+const config = require("../../config")
 const prisma = new PrismaClient()
 class LowonganPekerjaanController {
     static messageerror = {
@@ -408,7 +410,6 @@ class LowonganPekerjaanController {
     // Read
     static async getLowongan(req, res) {
         try {
-
             let { id, inuser, rekomendasi, keyrekomendasi, skip, userlogin, profesi, pendidikan, statuskerja, kabupaten, fullfilter, manyid, gaji } = req.query
             // request dataloker untuk di edit 
             if (userlogin && userlogin === "true") {
@@ -459,10 +460,18 @@ class LowonganPekerjaanController {
 
             // filter berdasarkan gaji tertinggi
             if (gaji === "true") {
-                const highestItem = await prisma.$queryRaw`
+                let highestItem;
+                if (config.VPS === "TRUE") {
+                    highestItem = await prisma.$queryRaw`
             SELECT * FROM Lowonganpekerjaan
             ORDER BY CAST(REPLACE(REPLACE(gaji, ',', ''), ' ', '') AS UNSIGNED) DESC
             LIMIT 10;`;
+                } else {
+                    highestItem = await prisma.$queryRaw`
+            SELECT * FROM lowonganpekerjaan
+            ORDER BY CAST(REPLACE(REPLACE(gaji, ',', ''), ' ', '') AS UNSIGNED) DESC
+            LIMIT 10;`;
+                }
                 if (highestItem) {
                     if (highestItem.length) {
                         const semuaid = []
@@ -631,9 +640,9 @@ class LowonganPekerjaanController {
             }
             // coba query
 
-
             return res.json(returnvalue)
         } catch (error) {
+            console.log("error")
             console.log(error)
             return res.status(500).json({ message: 'error' })
         }

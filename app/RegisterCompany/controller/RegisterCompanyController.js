@@ -3,6 +3,8 @@ const { perusahaanValidation } = require('../../Services/Validation/JoiValidatio
 const removeSpacesServices = require('../../Services/RemoveSpace/RemoveSpaceService');
 const ValidationService = require('../../Services/AllValidation/AllValidationService');
 const CrudImagesService = require('../../Services/CrudImages/CrudImagesService');
+const SendMailService = require('../../Services/SendMail/SendMailService');
+const config = require('../../config');
 const prisma = new PrismaClient();
 
 class RegisterCompanyController {
@@ -74,9 +76,32 @@ class RegisterCompanyController {
         // Proses lanjutan untuk menyimpan data perusahaan beserta file gambar
         req.body.jumlahkaryawan = Number.parseInt(req.body.jumlahkaryawan)
         req.body.userId = req.user.id
-        await prisma.companyprofile.create({data:req.body})
+        const dataperusahaan = await prisma.companyprofile.create({data:req.body})
+        // {
+        //     from :'',
+        //     to : ''
+        //     subject :'',
+        //     text:'',
+        //     template : 'Template'
+        // }
+        const ambilsemuaadmin = await prisma.user.findMany({where:{role:"ADMIN"}})
+        const emailtujuankirim = []
+        if(ambilsemuaadmin.length){
+            ambilsemuaadmin.map(data=>emailtujuankirim.push(data.email))
+        }
+        if(!emailtujuankirim.length){
+            emailtujuankirim.push(config.EMAIL)
+        }
+        await SendMailService.SendMail({
+            from : config.EMAIL,
+            to : emailtujuankirim.join(","),
+            subject : "Persetujuan Diperlukan",
+            text:"Pendaftaran Perusahaan Baru",
+            template: SendMailService.TemplateRegisterCompany(dataperusahaan)
+        })
         return res.json({message:'Berhasil membuat perusahaan baru'})
         } catch (error) {
+            // console.log(error)
             res.status(500).json({ message: 'Gagal membuat perusahaan baru', error: error.message });
         }
     }
